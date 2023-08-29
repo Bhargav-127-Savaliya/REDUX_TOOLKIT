@@ -3,3 +3,13 @@
     align-items: center;
     display: flex;
 }
+.main {
+    height: 85vh;
+    width: 85vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.removel {
+    cursor: pointer;
+}

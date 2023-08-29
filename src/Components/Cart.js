@@ -1,49 +1,51 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteAsync, updateAsync } from './cartSlice';
 
-export function Cart() {
-  const dispatch = useDispatch();
+import { fatchAsync, deleteAsync } from '../Slices/CartSlice';
+import { useEffect } from 'react';
+import EmptyCart from './EmptyCart';
+import '../App.css';
+// import { addItems } from '../API/CartAPI';
+
+export default function Cart() {
+  const dispatch = useDispatch()
   const items = useSelector((state) => state.cart.items);
 
+  useEffect(() => {
+    dispatch(fatchAsync())
+  },[])
 
-  const handleChange = (e,id)=>{
-     console.log(e.target.value)
-     dispatch(updateAsync({id, change:{quantity:+e.target.value}}))
-
-  }
- 
-
-
+  // <button onClick={()=>dispatch(deleteAsync(Addeditem.id))}>Delete</button> // li or button
   return (
-    <div>
-      <div>
-        
-        {items.map((item) => <div className="cart-item">
-        <img
-          className="img-fluid"
-          src={item.image}
-          alt=""
-        />
-        <div className="description">
-          <p>{item.title}</p>
-          <span>{item.brand}</span>
-          <strong>${item.price}</strong>
-        </div>
-        <div className="quantity">
-          Quantity
-          <select value={item.quantity} onChange={(e)=>handleChange(e,item.id)}>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-          </select>
-        </div>
-        <div className='close'>
-          <button onClick={()=>dispatch(deleteAsync(item.id))}>X</button>
-        </div>
-      </div>
-        )}
-      </div>
-      <h1>Total:{items.reduce((acc, item)=>item.price*item.quantity+acc ,0 )}</h1>
+    <div className="mx-24">
+      {
+        items.length > 0 ? <ul role="list" className="... divide-y divide-gray-100">
+          {items.map((Addeditem) => (
+            <div key={Math.random()} className="lis">
+              <li onClick={()=>dispatch(deleteAsync(Addeditem.id))} className="flex justify-between gap-x-6 py-5 removel">
+                <div className="flex min-w-0 gap-x-4">
+                  <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={Addeditem.image} alt="" />
+                  <div className="min-w-0 flex-auto">
+                    <p className="text-sm font-semibold leading-6 text-gray-900">{Addeditem.title}</p>
+                    <p className="mt-1 truncate text-xs leading-5 text-gray-500">Brand : {Addeditem.brand}</p>
+                  </div>
+                </div>
+                <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                  <p className="text-sm leading-6 text-gray-900">$ {Addeditem.price}</p>
+                  <div className="mt-1 flex items-center gap-x-1.5">
+                    <div className="flex-none rounded-full bg-emerald-500/20 p-1">
+                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </div>
+                    <p className="text-xs leading-5 text-gray-500">Top Seller</p>
+                  </div>
+                </div>
+              </li>
+              {/* <button onClick={() => dispatch(deleteAsync(Addeditem.id))} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                Remove
+              </button> */}
+            </div>
+          ))}
+        </ul> : <EmptyCart />
+      }
     </div>
-  );
+  )
 }
